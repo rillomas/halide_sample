@@ -22,7 +22,7 @@ ctlib = static_library(
 	# compiler warnings.
 	cpp_args:[
 		'-Wno-unused-parameter',
-		'-Wmissing-field-initializers',
+		'-Wno-missing-field-initializers',
 	],
 	include_directories:[
 		inc,

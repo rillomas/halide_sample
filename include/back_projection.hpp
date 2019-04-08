@@ -24,9 +24,12 @@ public:
 	int channels;
 };
 
-Result calc_back_projection(
+Result calc_back_projection_serial(
 	Image* output,
 	const Image& input);
 
+Result calc_back_projection_parallel(
+	Image* output,
+	const Image& input);
 	
 } // namespace
