@@ -18,7 +18,7 @@ static Func calc_back_projection_generic(
 	return backproj;
 }
 
-Result calc_back_projection_serial(
+Result calc_back_projection_generic(
 	Image* output,
 	const Image& input) {
 	Var x,y,c;
@@ -29,14 +29,14 @@ Result calc_back_projection_serial(
 	return OK;
 }
 
-Result calc_back_projection_parallel(
+Result calc_back_projection_cpu(
 	Image* output,
 	const Image& input) {
 	Var x,y,c;
 	Buffer<uint8_t> inbuf(input.data, input.width, input.height, input.channels);
 	auto backproj = calc_back_projection_generic(inbuf, x, y, c);
 	Buffer<uint8_t> outbuf(output->data, output->width, output->height, output->channels);
-	backproj.parallel(y);
+	backproj.vectorize(x, 8).parallel(y);
 	backproj.realize(outbuf);
 	return OK;
 }
