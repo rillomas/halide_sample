@@ -32,5 +32,7 @@ ctlib = static_library(
 		halide,
 		curses
 	])
-
+ctlib_dep = declare_dependency(
+	include_directories: inc,
+	link_with: ctlib)
 subdir('test')
