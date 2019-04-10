@@ -8,13 +8,17 @@ project(
 sources = [
 	'back_projection.cpp',
 ]
-LOCAL_DIR = '/home/masato/.local'
+prefix = get_option('prefix')
 inc = include_directories('include')
-HALIDE_BIN_DIR = join_paths(LOCAL_DIR, 'bin')
-HALIDE_INC_DIR = join_paths(LOCAL_DIR, 'include')
 cc = meson.get_compiler('cpp')
 curses = cc.find_library('libcurses')
-halide = cc.find_library('libHalide', dirs:[HALIDE_BIN_DIR])
+halide = declare_dependency(
+	include_directories: join_paths(prefix, get_option('includedir')),
+	dependencies: cc.find_library(
+		'libHalide',
+		dirs:[join_paths(prefix, get_option('bindir'))
+	]),
+)
 ctlib = static_library(
 	'ct',
 	sources,
@@ -26,7 +30,6 @@ ctlib = static_library(
 	],
 	include_directories:[
 		inc,
-		HALIDE_INC_DIR,
 	],
 	dependencies:[
 		halide,
