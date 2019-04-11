@@ -1,0 +1,3 @@
+[submodule "subprojects/Halide"]
+	path = subprojects/Halide
+	url = https://github.com/halide/Halide.git
