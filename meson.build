@@ -7,6 +7,7 @@ project(
 	])
 sources = [
 	'back_projection.cpp',
+	'GenGen.cpp',
 ]
 prefix = get_option('prefix')
 inc = include_directories('include')
@@ -19,8 +20,8 @@ halide = declare_dependency(
 		dirs:[join_paths(prefix, get_option('bindir'))
 	]),
 )
-ctlib = static_library(
-	'ct',
+executable(
+	'generator',
 	sources,
 	# cpp_args is currently used to suppress Halide's
 	# compiler warnings.
@@ -35,7 +36,7 @@ ctlib = static_library(
 		halide,
 		curses
 	])
-ctlib_dep = declare_dependency(
-	include_directories: inc,
-	link_with: ctlib)
-subdir('test')
+# ctlib_dep = declare_dependency(
+# 	include_directories: inc,
+# 	link_with: ctlib)
+# subdir('test')

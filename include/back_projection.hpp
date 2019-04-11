@@ -29,12 +29,12 @@ public:
 	int channels;
 };
 
-Result calc_back_projection_generic(
-	Image* output,
-	const Image& input);
+// Result calc_back_projection_generic(
+// 	Image* output,
+// 	const Image& input);
 
-Result calc_back_projection_cpu(
-	Image* output,
-	const Image& input);
+// Result calc_back_projection_cpu(
+// 	Image* output,
+// 	const Image& input);
 	
 } // namespace
