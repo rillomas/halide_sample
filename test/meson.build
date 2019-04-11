@@ -8,9 +8,9 @@ executable('test_halide',
 	link_with:[ctlib],
 	include_directories:[
 		inc,
-		HALIDE_INC_DIR,
 	],
 	dependencies:[
+		halide,
 		opencv,
 		gtest
 	])

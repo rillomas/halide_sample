@@ -9,6 +9,11 @@ enum Result {
 
 class Image {
 public:
+	Image()
+		: data(nullptr)
+		, width(0)
+		, height(0)
+		, channels(0){}
 	Image(
 		uint8_t* _data,
 		int _width,
