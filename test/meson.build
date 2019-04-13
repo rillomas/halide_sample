@@ -3,14 +3,18 @@ sources = [
 ]
 gtest = dependency('gtest_main')
 opencv = dependency('opencv')
+dl = cc.find_library('libdl')
 executable('test_halide',
 	sources,
-	link_with:[ctlib],
+	cpp_args:[
+		'-Wno-missing-field-initializers',
+	],
 	include_directories:[
-		inc,
+		halide_incdir
 	],
 	dependencies:[
-		halide,
 		opencv,
-		gtest
+		gtest,
+		ctlib_dep,
+		dl
 	])

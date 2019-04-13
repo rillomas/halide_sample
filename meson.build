@@ -10,17 +10,17 @@ sources = [
 	'GenGen.cpp',
 ]
 prefix = get_option('prefix')
-inc = include_directories('include')
 cc = meson.get_compiler('cpp')
 curses = cc.find_library('libcurses')
+halide_incdir = join_paths(prefix, get_option('includedir'))
 halide = declare_dependency(
-	include_directories: join_paths(prefix, get_option('includedir')),
+	include_directories: halide_incdir,
 	dependencies: cc.find_library(
 		'libHalide',
 		dirs:[join_paths(prefix, get_option('bindir'))
 	]),
 )
-executable(
+gengen = executable(
 	'generator',
 	sources,
 	# cpp_args is currently used to suppress Halide's
@@ -29,14 +29,24 @@ executable(
 		'-Wno-unused-parameter',
 		'-Wno-missing-field-initializers',
 	],
-	include_directories:[
-		inc,
-	],
 	dependencies:[
 		halide,
 		curses
 	])
-# ctlib_dep = declare_dependency(
-# 	include_directories: inc,
-# 	link_with: ctlib)
-# subdir('test')
+
+ct_name = 'back_projection_basic'
+ct_dir = '.'
+ct_target = custom_target(
+	ct_name+'[ah]',
+	output : [ct_name+'.a', ct_name+'.h'],
+	command : [
+		gengen,
+		'-g', 'back_projection',
+		'-f', ct_name,
+		'-o', ct_dir,
+		'target=host-x86-64'
+	])
+ctlib_dep = declare_dependency(
+	sources: ct_target,
+)
+subdir('test')
