@@ -15,6 +15,6 @@ executable('test_halide',
 	dependencies:[
 		opencv,
 		gtest,
-		ctlib_dep,
-		dl
+		dl,
+		ctlib_dep
 	])

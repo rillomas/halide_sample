@@ -36,17 +36,31 @@ gengen = executable(
 
 ct_name = 'back_projection_basic'
 ct_dir = '.'
-ct_target = custom_target(
-	ct_name+'[ah]',
-	output : [ct_name+'.a', ct_name+'.h'],
+basic_target = custom_target(
+	ct_name,
+	output : [ct_name+'.o', ct_name+'.h'],
 	command : [
 		gengen,
 		'-g', 'back_projection',
 		'-f', ct_name,
+		'-e', 'o,h',
 		'-o', ct_dir,
 		'target=host-x86-64'
 	])
+runtime_target = custom_target(
+	'halide_runtime',
+	output : ['halide_runtime_x86.o'],
+	command : [
+		gengen,
+		'-r', 'halide_runtime_x86',
+		'-e', 'o,h',
+		'-o', ct_dir,
+		'target=host-x86-64'
+	])
+ct_lib = static_library(
+	'ct',
+	[basic_target, runtime_target])
 ctlib_dep = declare_dependency(
-	sources: ct_target,
-)
+	sources: [basic_target, runtime_target]
+	)
 subdir('test')
