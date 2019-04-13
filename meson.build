@@ -35,16 +35,26 @@ gengen = executable(
 	])
 
 ct_name = 'back_projection_basic'
-ct_dir = '.'
-basic_target = custom_target(
-	ct_name,
-	output : [ct_name+'.o', ct_name+'.h'],
+basic_target_h = custom_target(
+	ct_name+'_h',
+	output : ct_name+'.h',
 	command : [
 		gengen,
 		'-g', 'back_projection',
 		'-f', ct_name,
-		'-e', 'o,h',
-		'-o', ct_dir,
+		'-e', 'h',
+		'-o', meson.current_build_dir(),
+		'target=host-x86-64'
+	])
+basic_target_o = custom_target(
+	ct_name+'_o',
+	output : ct_name+'.o',
+	command : [
+		gengen,
+		'-g', 'back_projection',
+		'-f', ct_name,
+		'-e', 'o',
+		'-o', meson.current_build_dir(),
 		'target=host-x86-64'
 	])
 runtime_target = custom_target(
@@ -53,14 +63,15 @@ runtime_target = custom_target(
 	command : [
 		gengen,
 		'-r', 'halide_runtime_x86',
-		'-e', 'o,h',
-		'-o', ct_dir,
+		'-e', 'o',
+		'-o', meson.current_build_dir(),
 		'target=host-x86-64'
 	])
 ct_lib = static_library(
 	'ct',
-	[basic_target, runtime_target])
+	[basic_target_o, runtime_target])
 ctlib_dep = declare_dependency(
-	sources: [basic_target, runtime_target]
+	link_with: ct_lib,
+	sources: [basic_target_h]
 	)
 subdir('test')
