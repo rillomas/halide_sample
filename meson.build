@@ -33,29 +33,31 @@ gengen = executable(
 		halide,
 		curses
 	])
-
-ct_name = 'back_projection_basic'
-basic_target_h = custom_target(
-	ct_name+'_h',
-	output : ct_name+'.h',
+# generate code for all backends
+gen_name = 'back_projection_generic'
+gen_target = custom_target(
+	gen_name+'_oh',
+	output : [gen_name+'.o', gen_name+'.h'],
 	command : [
 		gengen,
 		'-g', 'back_projection',
-		'-f', ct_name,
-		'-e', 'h',
+		'-f', gen_name,
+		'-e', 'o,h',
 		'-o', meson.current_build_dir(),
-		'target=host-x86-64'
+		'target=host'
 	])
-basic_target_o = custom_target(
-	ct_name+'_o',
-	output : ct_name+'.o',
+cpu_name = 'back_projection_cpu'
+cpu_target = custom_target(
+	cpu_name+'_oh',
+	output : [cpu_name+'.o', cpu_name+'.h'],
 	command : [
 		gengen,
 		'-g', 'back_projection',
-		'-f', ct_name,
-		'-e', 'o',
+		'-f', cpu_name,
+		'-e', 'o,h',
 		'-o', meson.current_build_dir(),
-		'target=host-x86-64'
+		'backend=cpu',
+		'target=host'
 	])
 runtime_target = custom_target(
 	'halide_runtime',
@@ -65,13 +67,13 @@ runtime_target = custom_target(
 		'-r', 'halide_runtime_x86',
 		'-e', 'o',
 		'-o', meson.current_build_dir(),
-		'target=host-x86-64'
+		'target=host'
 	])
 ct_lib = static_library(
 	'ct',
-	[basic_target_o, runtime_target])
+	[gen_target, cpu_target, runtime_target])
 ctlib_dep = declare_dependency(
 	link_with: ct_lib,
-	sources: [basic_target_h]
+	sources: [gen_target, cpu_target]
 	)
 subdir('test')
